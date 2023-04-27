@@ -10,13 +10,13 @@ public class gamemanager : MonoBehaviour
   [SerializeField] GameObject ReiniciarButton;
   public string mensaje;
   public bool estado;
-    public void Restart(){
-        SceneManager.LoadSceneAsync("SampleScene");
-    }
     public void final(){
         MensajeFinal.GetComponent<TMPro.TextMeshProUGUI>().text = mensaje;
         MensajeFinal.SetActive(true);
         ReiniciarButton.SetActive(true);
+    }
+    public void GameLoop(){
+        SceneManager.LoadSceneAsync("SampleScene");
     }
     
 }

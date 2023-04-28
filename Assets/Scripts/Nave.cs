@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using DG.Tweening;
 
 public class Nave : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class Nave : MonoBehaviour
     public float propulsor = 20.0f;
     public float velocidadRot = 5.0f;
     [SerializeField] TextMeshProUGUI TextoVelocidad, TextoCombustible, TextoAltura;
-    private float combustible;
+    private float combustible = 100;
     private float altura;
     [SerializeField] GameObject plataforma;
     [SerializeField] GameObject camara;
@@ -22,6 +23,8 @@ public class Nave : MonoBehaviour
     private float consumo = 0.01f;
     private bool grounded = false;
     public int limI, limD;
+    private bool lowfuel = false;
+    private bool mensajeActivo = false;
 
 
     void Start()
@@ -32,7 +35,7 @@ public class Nave : MonoBehaviour
         StartCoroutine(Combustible());
         trail.Stop(true);
         Comportamiento();
-        combustible = Random.Range(40,80);
+        combustible = Random.Range(40, 80);
 
 
     }
@@ -48,10 +51,13 @@ public class Nave : MonoBehaviour
 
         if (gameObject.transform.position.y < plataforma.transform.position.y)
         {
-            GM.GetComponent<gamemanager>().mensaje = "Quedaste varado en la superficie lunar";
-            GM.GetComponent<gamemanager>().final();
-
             grounded = true;
+            if (mensajeActivo == false)
+            {
+                GM.GetComponent<gamemanager>().mensaje = "Quedaste varado en la superficie lunar";
+                GM.GetComponent<gamemanager>().final();
+            }
+            mensajeActivo = true;
         }
         if (transform.position.x < limI)
         {
@@ -61,7 +67,8 @@ public class Nave : MonoBehaviour
         {
             this.transform.position = new Vector3(limI + 1, gameObject.transform.position.y, gameObject.transform.position.z);
         }
-        if (combustible <= 0){
+        if (combustible <= 0)
+        {
             grounded = true;
         }
     }
@@ -71,14 +78,22 @@ public class Nave : MonoBehaviour
         grounded = true;
         if (other.CompareTag("Finish"))
         {
-            rb.constraints = RigidbodyConstraints.FreezePosition;
-            
 
-            if (rb.velocity.y < -2.0f)
+
+            if (mensajeActivo == false)
             {
-                GM.GetComponent<gamemanager>().mensaje = "Golpeaste muy fuerte la plataforma, mision fracasada";
+                if (rb.velocity.y < -2.0f)
+                {
+                    GM.GetComponent<gamemanager>().mensaje = "Golpeaste muy fuerte la plataforma, mision fracasada";
+                    mensajeActivo = true;
+                }
+                else
+                {
+                    GM.GetComponent<gamemanager>().mensaje = "Eres un heroe de esta nacion";
+                    mensajeActivo = true;
+                }
             }
-            else { GM.GetComponent<gamemanager>().mensaje = "Eres un heroe de esta nacion"; }
+
 
             velocidad = Vector3.zero;
             G = 0;
@@ -93,6 +108,22 @@ public class Nave : MonoBehaviour
         TextoVelocidad.GetComponent<TMPro.TextMeshProUGUI>().text = "Velocidad Vertical: " + Mathf.Round(rb.velocity.y * 10000f) * 0.0001f + " m/s";
         TextoCombustible.GetComponent<TMPro.TextMeshProUGUI>().text = "Combustible: " + Mathf.Round(combustible * 100f) * 0.01f + "seg.";
         TextoAltura.GetComponent<TMPro.TextMeshProUGUI>().text = "Altura:" + Mathf.Round(altura * 100f) * 0.01f + "Metros";
+
+        if (combustible < 20)
+        {
+            if ((lowfuel == false))
+            {
+                TextoCombustible.GetComponent<TMPro.TextMeshProUGUI>()
+                .DOColor(Color.red, 0.6f)
+                .SetLoops(-1, LoopType.Yoyo);
+                lowfuel = true;
+            }
+            if (combustible < 1)
+            {
+                combustible = 0;
+            }
+        }
+
 
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(HUD());

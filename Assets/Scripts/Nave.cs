@@ -18,22 +18,26 @@ public class Nave : MonoBehaviour
     [SerializeField] GameObject plataforma;
     [SerializeField] GameObject camara;
     private Rigidbody rb;
-    private ParticleSystem trail;
 
     private float consumo = 0.01f;
     private bool grounded = false;
     public int limI, limD;
     private bool lowfuel = false;
     private bool mensajeActivo = false;
+    public GameObject propulsorPrin, propizq, propder;
+    private AudioSource audioData;
+    private bool propOn;
 
 
     void Start()
     {
-        trail = GetComponent<ParticleSystem>();
+        audioData = GetComponent<AudioSource>();
+        audioData.Play(0);
+
         rb = GetComponent<Rigidbody>();
         StartCoroutine(HUD());
         StartCoroutine(Combustible());
-        trail.Stop(true);
+
         Comportamiento();
         combustible = Random.Range(40, 80);
 
@@ -71,6 +75,8 @@ public class Nave : MonoBehaviour
         {
             grounded = true;
         }
+        Audio();
+        OutOfFuel();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -118,10 +124,6 @@ public class Nave : MonoBehaviour
                 .SetLoops(-1, LoopType.Yoyo);
                 lowfuel = true;
             }
-            if (combustible < 1)
-            {
-                combustible = 0;
-            }
         }
 
 
@@ -138,6 +140,7 @@ public class Nave : MonoBehaviour
         {
             velocidad += transform.up * propulsor * Time.deltaTime;
             combustible -= 1;
+
         }
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
@@ -159,16 +162,37 @@ public class Nave : MonoBehaviour
         {
             rb.AddRelativeForce(Vector3.up * propulsor);
             consumir();
+            propulsorPrin.SetActive(true);
+            propOn = true;
+        }
+        else
+        {
+            propulsorPrin.SetActive(false);
+            propOn = false;
         }
         if (Input.GetKey(KeyCode.LeftArrow))
         {
             rb.AddRelativeForce(new Vector3(-1, 0, 0) * propulsor);
             consumir();
+            propizq.SetActive(true);
+            propOn = true;
+        }
+        else
+        {
+            propizq.SetActive(false);
+            propOn = false;
         }
         if (Input.GetKey(KeyCode.RightArrow))
         {
             rb.AddRelativeForce(new Vector3(1, 0, 0) * propulsor);
             consumir();
+            propder.SetActive(true);
+            propOn = true;
+        }
+        else
+        {
+            propder.SetActive(false);
+            propOn = false;
         }
         if (Input.GetKey(KeyCode.A))
         {
@@ -180,7 +204,7 @@ public class Nave : MonoBehaviour
             rb.AddTorque(new Vector3(0, 0, -1) * 0.5f);
             consumir();
         }
-        trail.Play(false);
+
     }
 
     public IEnumerator Combustible()
@@ -196,7 +220,6 @@ public class Nave : MonoBehaviour
     {
         if (grounded == false)
         {
-            trail.Play(true);
             combustible -= consumo;
         }
     }
@@ -206,5 +229,26 @@ public class Nave : MonoBehaviour
         transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, Random.Range(-40, 40)));
         rb.AddForce(new Vector3(Random.Range(-2500, 2500), 0, 0));
     }
-
+    private void OutOfFuel()
+    {
+        if (combustible < 1)
+        {
+            combustible = 0;
+            propulsorPrin.SetActive(false);
+            propizq.SetActive(false);
+            propder.SetActive(false);
+            propOn = false;
+        }
+    }
+    private void Audio()
+    {
+        if (propOn == true)
+        {
+            audioData.UnPause();
+        }
+        else
+        {
+            audioData.Pause();
+        }
+    }
 }

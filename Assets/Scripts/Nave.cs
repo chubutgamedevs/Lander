@@ -24,7 +24,7 @@ public class Nave : MonoBehaviour
     public int limI, limD;
     private bool lowfuel = false;
     private bool mensajeActivo = false;
-    public GameObject propulsorPrin, propizq, propder;
+    public GameObject propulsorPrin, propizq, propder, propH1, propH2, propAh1, propAh2;
     private AudioSource audioData;
     private bool propOn;
 
@@ -39,7 +39,7 @@ public class Nave : MonoBehaviour
         StartCoroutine(Combustible());
 
         Comportamiento();
-        combustible = Random.Range(40, 80);
+        combustible = Random.Range(45, 80);
 
 
     }
@@ -47,8 +47,10 @@ public class Nave : MonoBehaviour
     void Update()
     {
         //camara.transform.LookAt(transform, Vector3.zero);
-
-        if (!grounded)
+        Audio();
+        OutOfFuel();
+        Limites();
+        if(!grounded)
         {
             RigidbodyController();
         }
@@ -56,6 +58,7 @@ public class Nave : MonoBehaviour
         if (gameObject.transform.position.y < plataforma.transform.position.y)
         {
             grounded = true;
+            ApagarProps();
             if (mensajeActivo == false)
             {
                 GM.GetComponent<gamemanager>().mensaje = "Quedaste varado en la superficie lunar";
@@ -63,25 +66,12 @@ public class Nave : MonoBehaviour
             }
             mensajeActivo = true;
         }
-        if (transform.position.x < limI)
-        {
-            this.transform.position = new Vector3(limD - 1, gameObject.transform.position.y, gameObject.transform.position.z);
-        }
-        if (transform.position.x > limD)
-        {
-            this.transform.position = new Vector3(limI + 1, gameObject.transform.position.y, gameObject.transform.position.z);
-        }
-        if (combustible <= 0)
-        {
-            grounded = true;
-        }
-        Audio();
-        OutOfFuel();
     }
 
     private void OnTriggerEnter(Collider other)
     {
         grounded = true;
+        ApagarProps();
         if (other.CompareTag("Finish"))
         {
 
@@ -163,7 +153,6 @@ public class Nave : MonoBehaviour
             rb.AddRelativeForce(Vector3.up * propulsor);
             consumir();
             propulsorPrin.SetActive(true);
-            propOn = true;
         }
         else
         {
@@ -175,7 +164,6 @@ public class Nave : MonoBehaviour
             rb.AddRelativeForce(new Vector3(-1, 0, 0) * propulsor);
             consumir();
             propizq.SetActive(true);
-            propOn = true;
         }
         else
         {
@@ -187,7 +175,6 @@ public class Nave : MonoBehaviour
             rb.AddRelativeForce(new Vector3(1, 0, 0) * propulsor);
             consumir();
             propder.SetActive(true);
-            propOn = true;
         }
         else
         {
@@ -198,11 +185,27 @@ public class Nave : MonoBehaviour
         {
             rb.AddTorque(new Vector3(0, 0, 1) * 0.5f);
             consumir();
+            propAh1.SetActive(true);
+            propAh2.SetActive(true);
+        }
+        else
+        {
+            propAh1.SetActive(false);
+            propAh2.SetActive(false);
+            propOn = false;
         }
         if (Input.GetKey(KeyCode.D))
         {
             rb.AddTorque(new Vector3(0, 0, -1) * 0.5f);
             consumir();
+            propH1.SetActive(true);
+            propH2.SetActive(true);
+        }
+        else
+        {
+            propH1.SetActive(false);
+            propH2.SetActive(false);
+            propOn = false;
         }
 
     }
@@ -221,6 +224,7 @@ public class Nave : MonoBehaviour
         if (grounded == false)
         {
             combustible -= consumo;
+            propOn = true;
         }
     }
     private void Comportamiento()
@@ -234,10 +238,8 @@ public class Nave : MonoBehaviour
         if (combustible < 1)
         {
             combustible = 0;
-            propulsorPrin.SetActive(false);
-            propizq.SetActive(false);
-            propder.SetActive(false);
-            propOn = false;
+            grounded = true;
+            ApagarProps();
         }
     }
     private void Audio()
@@ -249,6 +251,27 @@ public class Nave : MonoBehaviour
         else
         {
             audioData.Pause();
+        }
+    }
+    private void ApagarProps()
+    {
+        propulsorPrin.SetActive(false);
+        propizq.SetActive(false);
+        propder.SetActive(false);
+        propH1.SetActive(false);
+        propH2.SetActive(false);
+        propAh1.SetActive(false);
+        propAh2.SetActive(false);
+        propOn = false;
+    }
+    private void Limites(){
+        if (transform.position.x < limI)
+        {
+            this.transform.position = new Vector3(limD - 1, gameObject.transform.position.y, gameObject.transform.position.z);
+        }
+        if (transform.position.x > limD)
+        {
+            this.transform.position = new Vector3(limI + 1, gameObject.transform.position.y, gameObject.transform.position.z);
         }
     }
 }

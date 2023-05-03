@@ -8,7 +8,7 @@ public class Plataforma : MonoBehaviour
     [SerializeField] int maxY;
    void Start()
     {
-      gameObject.transform.position = new Vector3(Random.Range(minX,maxY),-20,0);   
+      gameObject.transform.position = new Vector3(Random.Range(minX,maxY),-19,0);   
     }
 }
 

@@ -81,6 +81,8 @@ GameObject:
   - component: {fileID: 5317776964797249967}
   - component: {fileID: 5317776964797249960}
   - component: {fileID: 5317776964797249961}
+  - component: {fileID: 539452934002586491}
+  - component: {fileID: 5518214054877485535}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: Untagged
@@ -167,6 +169,35 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &539452934002586491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5317776964797249963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16b974ba140f764338fda493bdf82a28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 5518214054877485535}
+--- !u!54 &5518214054877485535
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5317776964797249963}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &5317776965092888954
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,6 +307,8 @@ GameObject:
   - component: {fileID: 5317776966173357810}
   - component: {fileID: 5317776966173357811}
   - component: {fileID: 5317776966173357820}
+  - component: {fileID: 4506908869112052903}
+  - component: {fileID: 8326953834800685349}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -361,6 +394,35 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4506908869112052903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5317776966173357822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16b974ba140f764338fda493bdf82a28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 8326953834800685349}
+--- !u!54 &8326953834800685349
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5317776966173357822}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &166795981120072194
 PrefabInstance:
   m_ObjectHideFlags: 0

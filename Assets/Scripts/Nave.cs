@@ -14,7 +14,7 @@ public class Nave : MonoBehaviour
     public float velocidadRot = 5.0f;
     [SerializeField] TextMeshProUGUI TextoVelocidad, TextoCombustible, TextoAltura;
     private float combustible = 100;
-    private float altura;
+    public float altura;
     [SerializeField] GameObject plataforma;
     [SerializeField] GameObject camara;
     private Rigidbody rb;
@@ -27,6 +27,8 @@ public class Nave : MonoBehaviour
     public GameObject propulsorPrin, propizq, propder, propH1, propH2, propAh1, propAh2;
     private AudioSource audioData;
     private bool propOn;
+    private string velAterrizaje;
+    [SerializeField] GameObject ragdoll0, ragdoll1;
 
 
     void Start()
@@ -61,8 +63,11 @@ public class Nave : MonoBehaviour
             ApagarProps();
             if (mensajeActivo == false)
             {
+                ragdoll0.GetComponent<Collider>().isTrigger = false;
                 GM.GetComponent<gamemanager>().mensaje = "Quedaste varado en la superficie lunar";
                 GM.GetComponent<gamemanager>().final();
+                ragdoll0.GetComponent<Ragdoll>().EnableRagdoll();
+                ragdoll1.GetComponent<Ragdoll>().EnableRagdoll();
             }
             mensajeActivo = true;
         }
@@ -72,6 +77,7 @@ public class Nave : MonoBehaviour
     {
         grounded = true;
         ApagarProps();
+        velAterrizaje = rb.velocity.y.ToString();
         if (other.CompareTag("Finish"))
         {
 
@@ -80,12 +86,12 @@ public class Nave : MonoBehaviour
             {
                 if (rb.velocity.y < -2.0f)
                 {
-                    GM.GetComponent<gamemanager>().mensaje = "Golpeaste muy fuerte la plataforma, mision fracasada";
+                    GM.GetComponent<gamemanager>().mensaje = "Golpeaste muy fuerte la plataforma, mision fracasada "+ "Vel. final: " + velAterrizaje+ "m/s";
                     mensajeActivo = true;
                 }
                 else
                 {
-                    GM.GetComponent<gamemanager>().mensaje = "Eres un heroe de esta nacion";
+                    GM.GetComponent<gamemanager>().mensaje = "Eres un heroe de esta Nación " + "Vel. final: " + velAterrizaje + "m/s";
                     mensajeActivo = true;
                 }
             }
@@ -114,6 +120,19 @@ public class Nave : MonoBehaviour
                 .SetLoops(-1, LoopType.Yoyo);
                 lowfuel = true;
             }
+        }
+        if (rb.velocity.y < -5){
+            TextoVelocidad.GetComponent<TMPro.TextMeshProUGUI>()
+            .DOColor(Color.red, 0.6f);
+            TextoVelocidad.fontSize = 25f;
+        }else if (rb.velocity.y < -2.0f ){
+            TextoVelocidad.GetComponent<TMPro.TextMeshProUGUI>()
+            .DOColor(Color.yellow, 0.6f);
+            TextoVelocidad.fontSize = 24f;            
+        }else {
+            TextoVelocidad.GetComponent<TMPro.TextMeshProUGUI>()
+            .DOColor(Color.cyan, 0.6f);
+            TextoVelocidad.fontSize = 23f;            
         }
 
 
@@ -252,6 +271,7 @@ public class Nave : MonoBehaviour
         {
             audioData.Pause();
         }
+        
     }
     private void ApagarProps()
     {

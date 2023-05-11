@@ -8,6 +8,7 @@ public class gamemanager : MonoBehaviour
 {
   [SerializeField] GameObject MensajeFinal;
   [SerializeField] GameObject ReiniciarButton;
+  [SerializeField] GameObject SoundManager;
   public string mensaje;
   public bool estado;
     public void final(){

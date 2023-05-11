@@ -7,6 +7,7 @@ using DG.Tweening;
 public class Nave : MonoBehaviour
 {
     public GameObject GM;
+    public GameObject SM;
     Vector3 velocidad = Vector3.zero;
     public float G = 9.8f;
 
@@ -29,12 +30,14 @@ public class Nave : MonoBehaviour
     private bool propOn;
     private string velAterrizaje;
     [SerializeField] GameObject ragdoll0, ragdoll1;
+    public AudioClip propulsorSound;
 
 
     void Start()
     {
         audioData = GetComponent<AudioSource>();
         audioData.Play(0);
+        audioData.UnPause();
 
         rb = GetComponent<Rigidbody>();
         StartCoroutine(HUD());
@@ -43,7 +46,7 @@ public class Nave : MonoBehaviour
         Comportamiento();
         combustible = Random.Range(45, 80);
 
-
+        
     }
 
     void Update()
@@ -88,6 +91,8 @@ public class Nave : MonoBehaviour
                 {
                     GM.GetComponent<gamemanager>().mensaje = "Golpeaste muy fuerte la plataforma, mision fracasada "+ "Vel. final: " + velAterrizaje+ "m/s";
                     mensajeActivo = true;
+                    ragdoll0.GetComponent<Ragdoll>().EnableRagdoll();
+                    ragdoll1.GetComponent<Ragdoll>().EnableRagdoll();
                 }
                 else
                 {
@@ -136,7 +141,7 @@ public class Nave : MonoBehaviour
         }
 
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         StartCoroutine(HUD());
     }
 
@@ -172,6 +177,7 @@ public class Nave : MonoBehaviour
             rb.AddRelativeForce(Vector3.up * propulsor);
             consumir();
             propulsorPrin.SetActive(true);
+            
         }
         else
         {
@@ -244,6 +250,7 @@ public class Nave : MonoBehaviour
         {
             combustible -= consumo;
             propOn = true;
+            Audio();
         }
     }
     private void Comportamiento()
@@ -265,11 +272,11 @@ public class Nave : MonoBehaviour
     {
         if (propOn == true)
         {
-            audioData.UnPause();
+            SoundManager.instance.PlaySound(propulsorSound);
         }
         else
         {
-            audioData.Pause();
+            SoundManager.instance.Pause();
         }
         
     }

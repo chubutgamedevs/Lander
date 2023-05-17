@@ -211,7 +211,7 @@ GameObject:
   - component: {fileID: 5317776965092888959}
   - component: {fileID: 5317776965092888958}
   m_Layer: 0
-  m_Name: Nave
+  m_Name: Modulo lunar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
